@@ -14,7 +14,7 @@ class GitHubViewModel(
         ioDispatcher: CoroutineDispatcher
 ) : ViewModel(), KoinComponent {
     val appRepository : AppRepository by inject()
-    var mAllPeopleResponse = MutableLiveData<LiveDataWrapper<GitHubRepoModel>>()
+    var repoLiveData = MutableLiveData<LiveDataWrapper<GitHubRepoModel>>()
     private val job = SupervisorJob()
     val mUiScope = CoroutineScope(mainDispatcher + job)
     val mIoScope = CoroutineScope(ioDispatcher + job)
@@ -23,22 +23,20 @@ class GitHubViewModel(
     //can be called from View explicitly if required
     //Keep default scope
     fun getRepositoryData(param:String) {
-        if(mAllPeopleResponse.value == null){
             mUiScope.launch {
-                mAllPeopleResponse.value = LiveDataWrapper.loading()
+                repoLiveData.value = LiveDataWrapper.loading()
                 try {
                     val data = mIoScope.async {
                         return@async appRepository.getRepositoryData(param)
                     }.await()
                     try {
-                        mAllPeopleResponse.value = LiveDataWrapper.success(data)
+                        repoLiveData.value = LiveDataWrapper.success(data)
                     } catch (e: Exception) {
                     }
                 } catch (e: Exception) {
-                    mAllPeopleResponse.value = LiveDataWrapper.error(e)
+                    repoLiveData.value = LiveDataWrapper.error(e)
                 }
             }
-        }
     }
 
     override fun onCleared() {

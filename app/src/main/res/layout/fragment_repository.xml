@@ -30,16 +30,19 @@
         android:visibility="gone">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/retryButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_border"
             android:text="RETRY"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:textColor="@color/teal_700"
             app:backgroundTint="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:focusable="true" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -47,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/nointernet_connection"
-            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintBottom_toTopOf="@+id/retryButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
