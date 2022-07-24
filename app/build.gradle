@@ -61,7 +61,7 @@ dependencies {
     //Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_extension"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_extension"
-
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     //Multidex
     implementation "androidx.multidex:multidex:$multidex"
 

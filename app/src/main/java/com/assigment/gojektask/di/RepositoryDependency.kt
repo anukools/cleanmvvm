@@ -1,5 +1,6 @@
 package com.assigment.gojektask.di
 
+import com.assigment.gojektask.repository.AppRepository
 import org.koin.dsl.module
 
 /**
@@ -10,7 +11,7 @@ import org.koin.dsl.module
 val RepositoryDependency = module {
 
     factory {
-
+        AppRepository()
     }
 
 }
