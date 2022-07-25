@@ -44,7 +44,7 @@ class GithubFragment : BaseFragment() {
         //Start observing the targets
         this.mViewModel.repoLiveData.observe(viewLifecycleOwner, this.mDataObserver)
 
-        mRecyclerViewAdapter = RepositoryAdapter(requireActivity(), arrayListOf())
+        mRecyclerViewAdapter = RepositoryAdapter(arrayListOf())
         repoRecyclerView.addItemDecoration(DividerItemDecoration(requireActivity(), LinearLayoutManager.VERTICAL))
         repoRecyclerView.adapter = mRecyclerViewAdapter
 

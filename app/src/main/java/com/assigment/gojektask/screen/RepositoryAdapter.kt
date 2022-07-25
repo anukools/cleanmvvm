@@ -1,49 +1,69 @@
 package com.assigment.gojektask.screen
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.assigment.gojektask.R
+import com.assigment.gojektask.base.BaseViewHolder
+import com.assigment.gojektask.databinding.RepoListViewItemBinding
 import com.assigment.gojektask.model.GitHubRepoModel
-import com.bumptech.glide.Glide
 
-class RepositoryAdapter (val context: Context, list: ArrayList<GitHubRepoModel.GitHubRepoModelItem>): RecyclerView.Adapter<RepositoryAdapter.DataViewHolder>() {
+class RepositoryAdapter(list: ArrayList<GitHubRepoModel.GitHubRepoModelItem>) :
+    RecyclerView.Adapter<RepositoryAdapter.DataViewHolder>() {
 
     var mItemList = list
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
-        return DataViewHolder(LayoutInflater.from(context).inflate(R.layout.repo_list_view_item,parent,false))
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = RepoListViewItemBinding.inflate(layoutInflater, parent, false)
+        return DataViewHolder(binding)
     }
 
-    fun updateListItems(updatedList: ArrayList<GitHubRepoModel.GitHubRepoModelItem>){
+    fun updateListItems(updatedList: ArrayList<GitHubRepoModel.GitHubRepoModelItem>) {
         mItemList.clear()
         mItemList = updatedList
         notifyDataSetChanged()
     }
+
     override fun getItemCount(): Int {
         return mItemList.size
     }
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
-        val model : GitHubRepoModel.GitHubRepoModelItem = mItemList[position]
-        holder.personName.text = model.name
-        holder.dob.text = model.description
-
-        Glide.with(context).load(model.owner.avatar_url)
-            .fallback(android.R.drawable.stat_notify_error)
-            .timeout(4500)
-            .into(holder.avatarLogo)
+        holder.onBind(position)
     }
 
-    class DataViewHolder(item: View): RecyclerView.ViewHolder(item){
-        val personName : TextView = item.findViewById(R.id.repoNameTv)
-        val dob : TextView = item.findViewById(R.id.repoDescTv)
+    var mExpandedPosition = -1
 
-        val avatarLogo : ImageView = item.findViewById(R.id.repoLogoIv)
+    inner class DataViewHolder(private val binding: RepoListViewItemBinding) :
+        BaseViewHolder(binding.root) {
+
+        init {
+            binding.parentLayout.setOnClickListener {
+                val shouldExpand = binding.expandLayout.visibility == View.GONE
+                if (shouldExpand) {
+                    binding.expandLayout.visibility = View.VISIBLE
+                    if (mExpandedPosition != -1 && mExpandedPosition != adapterPosition) {
+                        notifyItemChanged(mExpandedPosition)
+                    }
+                    mExpandedPosition = adapterPosition
+                } else {
+                    binding.expandLayout.visibility = View.GONE
+                }
+            }
+        }
+
+        override fun onBind(position: Int) {
+            val repoData: GitHubRepoModel.GitHubRepoModelItem = mItemList[position]
+            binding.repoData = repoData
+            // make sure to include this so your view will be updated
+            binding.executePendingBindings()
+
+            val shouldCollapse = binding.expandLayout.visibility == View.VISIBLE
+            if (shouldCollapse) {
+                binding.expandLayout.visibility = View.GONE
+            }
+        }
 
     }
 }
