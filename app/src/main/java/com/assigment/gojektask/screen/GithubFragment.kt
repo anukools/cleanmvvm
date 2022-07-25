@@ -72,14 +72,15 @@ class GithubFragment : BaseFragment() {
         when (result?.responseStatus) {
             LiveDataWrapper.RESULT.LOADING -> {
                 // Loading data
-                progress_circular.visibility = View.VISIBLE
+//                progress_circular.visibility = View.VISIBLE
                 error_holder.visibility = View.GONE
-                repoRecyclerView.visibility = View.GONE
+                repoRecyclerView.showShimmerAdapter()
             }
             LiveDataWrapper.RESULT.ERROR -> {
                 // Error for http request
                 progress_circular.visibility = View.GONE
                 repoRecyclerView.visibility = View.GONE
+                repoRecyclerView.hideShimmerAdapter()
                 error_holder.visibility = View.VISIBLE
                 showToast("Error in getting data")
 
@@ -88,8 +89,10 @@ class GithubFragment : BaseFragment() {
                 // Data from API
                 progress_circular.visibility = View.GONE
                 error_holder.visibility = View.GONE
-
                 repoRecyclerView.visibility = View.VISIBLE
+
+                repoRecyclerView.hideShimmerAdapter()
+
                 val mainItemReceived = result.response as ArrayList<RepoDBModel>
                 processData(mainItemReceived)
             }

@@ -79,4 +79,6 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
+    implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
+
 }

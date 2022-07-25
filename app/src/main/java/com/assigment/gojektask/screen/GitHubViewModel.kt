@@ -39,6 +39,7 @@ class GitHubViewModel(
 
     private fun getRepoListFromLocalCache() {
         viewModelScope.launch {
+            repoLiveData.value = LiveDataWrapper.loading()
             try {
                 val data = mIoScope.async {
                     return@async appRepository.getRepositoryFromDB()
