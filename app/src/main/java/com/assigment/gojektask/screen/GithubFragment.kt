@@ -43,11 +43,15 @@ class GithubFragment : BaseFragment() {
         //Start observing the targets
         mViewModel.repoLiveData.observe(viewLifecycleOwner, dataObserver)
 
-        getTrendingRepository()
+        getTrendingRepository(false)
+
+        swipeContainer.setOnRefreshListener {
+            getTrendingRepository(true)
+        }
 
         // handle retry action
         retryButton.setOnClickListener {
-            getTrendingRepository()
+            getTrendingRepository(true)
         }
 
     }
@@ -63,8 +67,8 @@ class GithubFragment : BaseFragment() {
         repoRecyclerView.adapter = mRecyclerViewAdapter
     }
 
-    private fun getTrendingRepository() {
-        mViewModel.checkForDataSource(organizationName)
+    private fun getTrendingRepository(isForceUpdate: Boolean) {
+        mViewModel.checkForDataSource(organizationName, isForceUpdate)
     }
 
     //---------------Observers---------------//
@@ -72,26 +76,24 @@ class GithubFragment : BaseFragment() {
         when (result?.responseStatus) {
             LiveDataWrapper.RESULT.LOADING -> {
                 // Loading data
-//                progress_circular.visibility = View.VISIBLE
                 error_holder.visibility = View.GONE
+                repoRecyclerView.visibility = View.VISIBLE
                 repoRecyclerView.showShimmerAdapter()
             }
             LiveDataWrapper.RESULT.ERROR -> {
                 // Error for http request
-                progress_circular.visibility = View.GONE
                 repoRecyclerView.visibility = View.GONE
                 repoRecyclerView.hideShimmerAdapter()
                 error_holder.visibility = View.VISIBLE
-                showToast("Error in getting data")
-
+                swipeContainer.isRefreshing = false
             }
             LiveDataWrapper.RESULT.SUCCESS -> {
                 // Data from API
-                progress_circular.visibility = View.GONE
                 error_holder.visibility = View.GONE
                 repoRecyclerView.visibility = View.VISIBLE
 
                 repoRecyclerView.hideShimmerAdapter()
+                swipeContainer.isRefreshing = false
 
                 val mainItemReceived = result.response as ArrayList<RepoDBModel>
                 processData(mainItemReceived)

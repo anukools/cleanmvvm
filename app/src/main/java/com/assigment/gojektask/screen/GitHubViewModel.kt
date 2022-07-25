@@ -20,7 +20,7 @@ class GitHubViewModel(
     private val job = SupervisorJob()
     private val mIoScope = CoroutineScope(ioDispatcher + job)
 
-    fun checkForDataSource(param: String){
+    fun checkForDataSource(param: String, isForce: Boolean){
         val lastFetchTime = appRepository.getLastFetchTime()
         val currentTime =  System.currentTimeMillis()
         // for testing
@@ -30,7 +30,7 @@ class GitHubViewModel(
         Log.d("GitHubViewModel", "fetchDifferenceInMinutes: $fetchDifferenceInHours")
 
         // lastFetchTime denotes first time call after that respective time difference will be checked
-        if (lastFetchTime == 0L || fetchDifferenceInHours >= 2) {
+        if (lastFetchTime == 0L || isForce || fetchDifferenceInHours >= 2) {
             callRepositoryAPI(param)
         } else {
             getRepoListFromLocalCache()
