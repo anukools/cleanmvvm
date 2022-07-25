@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.assigment.gojektask.base.BaseViewHolder
 import com.assigment.gojektask.databinding.RepoListViewItemBinding
-import com.assigment.gojektask.model.GitHubRepoModel
+import com.assigment.gojektask.room.RepoDBModel
 
-class RepositoryAdapter(list: ArrayList<GitHubRepoModel.GitHubRepoModelItem>) :
+class RepositoryAdapter(list: ArrayList<RepoDBModel>) :
     RecyclerView.Adapter<RepositoryAdapter.DataViewHolder>() {
 
     var mItemList = list
@@ -19,7 +19,7 @@ class RepositoryAdapter(list: ArrayList<GitHubRepoModel.GitHubRepoModelItem>) :
         return DataViewHolder(binding)
     }
 
-    fun updateListItems(updatedList: ArrayList<GitHubRepoModel.GitHubRepoModelItem>) {
+    fun updateListItems(updatedList: ArrayList<RepoDBModel>) {
         mItemList.clear()
         mItemList = updatedList
         notifyDataSetChanged()
@@ -54,7 +54,7 @@ class RepositoryAdapter(list: ArrayList<GitHubRepoModel.GitHubRepoModelItem>) :
         }
 
         override fun onBind(position: Int) {
-            val repoData: GitHubRepoModel.GitHubRepoModelItem = mItemList[position]
+            val repoData: RepoDBModel = mItemList[position]
             binding.repoData = repoData
             // make sure to include this so your view will be updated
             binding.executePendingBindings()

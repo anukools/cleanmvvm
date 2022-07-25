@@ -1,6 +1,7 @@
 package com.assigment.gojektask.di
 
 import com.assigment.gojektask.AppConstants
+import com.assigment.gojektask.BuildConfig
 import com.assigment.gojektask.network.GithubAPIService
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -25,7 +26,7 @@ val NetworkDependency = module {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .baseUrl("https://api.github.com").build()
+            .baseUrl(BuildConfig.BASE_URL).build()
     }
     factory{ get<Retrofit>().create(GithubAPIService::class.java) }
 }

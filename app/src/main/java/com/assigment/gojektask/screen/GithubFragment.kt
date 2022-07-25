@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.assigment.gojektask.R
 import com.assigment.gojektask.base.BaseFragment
 import com.assigment.gojektask.base.BaseViewModelFactory
-import com.assigment.gojektask.model.GitHubRepoModel
+import com.assigment.gojektask.room.RepoDBModel
 import com.assigment.gojektask.utils.LiveDataWrapper
 import kotlinx.android.synthetic.main.fragment_repository.*
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +20,9 @@ import kotlinx.coroutines.Dispatchers
 
 class GithubFragment : BaseFragment() {
     private val TAG = GithubFragment::class.java.simpleName
+    private val mBaseViewModelFactory: BaseViewModelFactory = BaseViewModelFactory(Dispatchers.IO)
+    lateinit var mRecyclerViewAdapter: RepositoryAdapter
+    private val organizationName = "octokit"
 
     companion object {
         fun getInstance() = GithubFragment()
@@ -27,41 +30,45 @@ class GithubFragment : BaseFragment() {
 
     override fun getLayoutId(): Int = R.layout.fragment_repository
 
-    private val mBaseViewModelFactory : BaseViewModelFactory =
-        BaseViewModelFactory(Dispatchers.Main, Dispatchers.IO)
-
-    val mDemoParam = "octokit"
-    lateinit var mRecyclerViewAdapter: RepositoryAdapter
-
-    private val mViewModel : GitHubViewModel by lazy {
+    private val mViewModel: GitHubViewModel by lazy {
         ViewModelProvider(this, mBaseViewModelFactory)
-            .get(GitHubViewModel::class.java)    }
-
+            .get(GitHubViewModel::class.java)
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        setUpRecyclerView()
+
         //Start observing the targets
-        this.mViewModel.repoLiveData.observe(viewLifecycleOwner, this.mDataObserver)
+        mViewModel.repoLiveData.observe(viewLifecycleOwner, dataObserver)
 
-        mRecyclerViewAdapter = RepositoryAdapter(arrayListOf())
-        repoRecyclerView.addItemDecoration(DividerItemDecoration(requireActivity(), LinearLayoutManager.VERTICAL))
-        repoRecyclerView.adapter = mRecyclerViewAdapter
+        getTrendingRepository()
 
-        getRepoAPI()
-
+        // handle retry action
         retryButton.setOnClickListener {
-            getRepoAPI()
+            getTrendingRepository()
         }
 
     }
 
-    fun getRepoAPI(){
-        mViewModel.getRepositoryData(mDemoParam)
+    private fun setUpRecyclerView() {
+        mRecyclerViewAdapter = RepositoryAdapter(arrayListOf())
+        repoRecyclerView.addItemDecoration(
+                DividerItemDecoration(
+                        requireActivity(),
+                        LinearLayoutManager.VERTICAL
+                )
+        )
+        repoRecyclerView.adapter = mRecyclerViewAdapter
+    }
+
+    private fun getTrendingRepository() {
+        mViewModel.checkForDataSource(organizationName)
     }
 
     //---------------Observers---------------//
-    private val mDataObserver = Observer<LiveDataWrapper<GitHubRepoModel>> { result ->
+    private val dataObserver = Observer<LiveDataWrapper<List<RepoDBModel>>> { result ->
         when (result?.responseStatus) {
             LiveDataWrapper.RESULT.LOADING -> {
                 // Loading data
@@ -83,7 +90,7 @@ class GithubFragment : BaseFragment() {
                 error_holder.visibility = View.GONE
 
                 repoRecyclerView.visibility = View.VISIBLE
-                val mainItemReceived = result.response as GitHubRepoModel
+                val mainItemReceived = result.response as ArrayList<RepoDBModel>
                 processData(mainItemReceived)
             }
         }
@@ -93,9 +100,8 @@ class GithubFragment : BaseFragment() {
     /**
      * Handle success data
      */
-    private fun processData(listItems: GitHubRepoModel) {
-        Log.d(TAG, "processData called with data ${listItems.size}")
-        Log.d(TAG, "processData listItems =  ${listItems}")
+    private fun processData(listItems: ArrayList<RepoDBModel>) {
+        Log.d(TAG, "Repo List Size ${listItems.size}")
 
         val refresh = Handler(Looper.getMainLooper())
         refresh.post {

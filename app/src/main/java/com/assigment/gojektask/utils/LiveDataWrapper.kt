@@ -1,5 +1,6 @@
 package com.assigment.gojektask.utils
 
+
 class LiveDataWrapper <T>(
     val responseStatus: RESULT,
     val response: T? = null,
