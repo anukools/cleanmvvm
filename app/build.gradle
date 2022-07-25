@@ -16,7 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.assigment.gojektask.app.CustomInstrumentationRunner"
         buildConfigField "String", "BASE_URL", "\"https://api.github.com/\""
     }
 
@@ -38,6 +38,12 @@ android {
         dataBinding true
         viewBinding true
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+
+        unitTests.includeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -47,9 +53,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation "androidx.constraintlayout:constraintlayout:$constraint_lyt"
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
 
     // Koin for Android
     implementation "org.koin:koin-android:$koin_version"
@@ -82,5 +86,23 @@ dependencies {
     implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+
+    //---------------------------- TESTING ----------------------------//
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_contrib"
+
+    androidTestImplementation "androidx.test:rules:$testx_rules"
+    androidTestImplementation "android.arch.core:core-testing:$android_arch_core_testing"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
+    androidTestImplementation "org.koin:koin-test:$koin_version"
+
+    testImplementation "androidx.test.ext:junit:$junit_x_ext"
+    testImplementation "android.arch.core:core-testing:$android_arch_core_testing"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
+    testImplementation "org.koin:koin-test:$koin_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
 
 }

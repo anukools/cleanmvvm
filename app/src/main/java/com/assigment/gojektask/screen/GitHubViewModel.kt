@@ -20,21 +20,24 @@ class GitHubViewModel(
     private val job = SupervisorJob()
     private val mIoScope = CoroutineScope(ioDispatcher + job)
 
-    fun checkForDataSource(param: String, isForce: Boolean){
-        val lastFetchTime = appRepository.getLastFetchTime()
-        val currentTime =  System.currentTimeMillis()
-        // for testing
-//        val fetchDifferenceInMinutes = TimeUnit.MILLISECONDS.toMinutes(currentTime -  lastFetchTime)
-        val fetchDifferenceInHours = TimeUnit.MILLISECONDS.toHours(currentTime -  lastFetchTime)
-
-        Log.d("GitHubViewModel", "fetchDifferenceInMinutes: $fetchDifferenceInHours")
-
-        // lastFetchTime denotes first time call after that respective time difference will be checked
-        if (lastFetchTime == 0L || isForce || fetchDifferenceInHours >= 2) {
+    fun checkForDataSource(param: String, isForce: Boolean) {
+        if (shouldForceUpdate(isForce, appRepository)) {
             callRepositoryAPI(param)
         } else {
             getRepoListFromLocalCache()
         }
+    }
+
+    fun shouldForceUpdate(isForce: Boolean, appRepository: AppRepository): Boolean {
+        // lastFetchTime denotes first time call after that respective time difference will be checked
+        val lastFetchTime = appRepository.getLastFetchTime()
+        val currentTime = System.currentTimeMillis()
+        // for testing
+//        val fetchDifferenceInMinutes = TimeUnit.MILLISECONDS.toMinutes(currentTime -  lastFetchTime)
+        val fetchDifferenceInHours = TimeUnit.MILLISECONDS.toHours(currentTime - lastFetchTime)
+
+        Log.d("GitHubViewModel", "fetchDifferenceInMinutes: $fetchDifferenceInHours")
+        return lastFetchTime == 0L || isForce || fetchDifferenceInHours >= 2
     }
 
     private fun getRepoListFromLocalCache() {
@@ -52,7 +55,7 @@ class GitHubViewModel(
         }
     }
 
-    private fun callRepositoryAPI(param: String) {
+    fun callRepositoryAPI(param: String) {
         viewModelScope.launch {
             repoLiveData.value = LiveDataWrapper.loading()
             try {

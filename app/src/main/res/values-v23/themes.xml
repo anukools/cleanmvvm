@@ -16,6 +16,8 @@
         <item name="android:windowLightStatusBar">true</item>
 
          <item name="actionBarTheme">@style/ThemeOverlay.Actionbar</item>
+
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
     <style name="ThemeOverlay.Actionbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >

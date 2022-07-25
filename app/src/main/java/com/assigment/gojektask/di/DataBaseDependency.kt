@@ -17,7 +17,7 @@ val DataBaseDependency = module {
     fun provideDao(dataBase: RepoDB): RepositoryDOA {
         return dataBase.repositoryDOA
     }
-    single { provideDataBase(androidApplication()) }
-    single { provideDao(get()) }
+    single<RepoDB> { provideDataBase(androidApplication()) }
+    single<RepositoryDOA> { provideDao(get()) }
 
 }
