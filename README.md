@@ -9,3 +9,5 @@ This sample demo app shows the current trending Github repositories fetched from
 * Uses Espresso and MockWebserver for UI testing
 * Pull-to-refresh option to the user to force fetch data from remote.
 
+
+![alt text]([http://url/to/img.png](https://github.com/anukools/cleanmvvm/blob/master/Screenshot_1661227317.png))
