@@ -10,4 +10,4 @@ This sample demo app shows the current trending Github repositories fetched from
 * Pull-to-refresh option to the user to force fetch data from remote.
 
 
-![alt text]([http://url/to/img.png](https://github.com/anukools/cleanmvvm/blob/master/Screenshot_1661227317.png))
+![Sample App](https://github.com/anukools/cleanmvvm/blob/master/Screenshot_1661227317.png)
